@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,15 +10,18 @@ namespace ConsoleHook
 	public class Graph
 	{
 		Random rand;
-		double startTicks;
+		float output = 0f;
 		ValPtr[] outputs;
 		ValPtr[] inputs;
+
+		public List<double> benchmark = new List<double>();
 		List<Node> flattened = new List<Node>();
+		Stopwatch bm = new Stopwatch();
 
 		public Graph(int[] topology)
 		{
 			if (topology == null || topology.Length == 0) return;
-			this.rand = new Random(1337);
+			this.rand = new Random(424242);
 			this.inputs = new ValPtr[topology[0]];
 
 			// Instantiate the inputs.
@@ -30,7 +34,8 @@ namespace ConsoleHook
 
 		public void Input(float[] values)
 		{
-			startTicks = DateTime.UtcNow.Ticks;
+			bm.Reset();
+			bm.Start();
 			if (values == null || values.Length != inputs.Length) return;
 			for (int i = 0; i < values.Length; i++)
 				this.inputs[i].Set(values[i]);
@@ -58,10 +63,19 @@ namespace ConsoleHook
 				{
 					inputs[i].onChange = (x) =>
 					{
-						double end = DateTime.UtcNow.Ticks - startTicks;
-						Console.ForegroundColor = ConsoleColor.Green;
-						Console.WriteLine("\n" + ((ValPtr)x).value + " @ " + end + " ticks");
-						Console.ResetColor();
+						float eval = ((ValPtr)x).value;
+
+						if (output != eval)
+						{
+							Console.ForegroundColor = ConsoleColor.Green;
+							double elapsed = bm.ElapsedTicks;
+							Console.WriteLine("\n" + ((ValPtr)x).value + " @ " + elapsed + " ticks");
+							benchmark.Add(elapsed);
+							bm.Reset();
+							Console.ResetColor();
+						}
+
+						output = eval;
 					};
 				}
 
@@ -90,7 +104,7 @@ namespace ConsoleHook
 			flattened.Add(node);
 
 			// Initialize a new thread to contain it.
-			Task.Factory.StartNew(() =>
+			System.Threading.Thread t = new System.Threading.Thread(() =>
 			{
 				while (true)
 				{
@@ -99,9 +113,11 @@ namespace ConsoleHook
 					// NOTE: This needs to be removed, but for the sanity of my test environment
 					// I have included it. I don't think it would be required if you delegate
 					// to the GPU?
-					System.Threading.Thread.Sleep(10);
+					// System.Threading.Thread.Sleep(1);
 				}
-			});			
+			});
+
+			t.Start();		
 
 			// Return the node.
 			// NOTE: It should already be pumping off evaluations.

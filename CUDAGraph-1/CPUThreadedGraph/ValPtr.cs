@@ -14,14 +14,13 @@ namespace ConsoleHook
 	{
 		public float value;
 		public Action<ValPtr> onChange = null;
-
+		
 		// Constructors.
 		public ValPtr() { }
 		public ValPtr(float v) { this.value = v; }
 		public void Set(float v)
 		{
-			float ov = this.value;
-			if (onChange != null && ov != v)
+			if (onChange != null)
 				onChange.Invoke(this);
 
 			this.value = v;
