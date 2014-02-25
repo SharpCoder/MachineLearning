@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{534440F7-920D-4736-B1FD-8AA0CBD60939}</ProjectGuid>
+    <ProjectGuid>208abfb7-5f2f-4f60-bf80-010e8b6f5f53</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ConsoleHook</RootNamespace>
-    <AssemblyName>ConsoleHook</AssemblyName>
+    <RootNamespace>SimpleGraph</RootNamespace>
+    <AssemblyName>SimpleGraph</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
