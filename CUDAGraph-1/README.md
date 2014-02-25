@@ -6,3 +6,9 @@ This project is designed to explore my theory of utilizing threads in a GPU to e
 *Hypothesis*: by implementing a pull architecture and utilizing the crazy threading ability of a GPU, graphs could be evaluated nearly instantly. Since each node is constantly evaluating itself and using a pointer to the parent node[s], layers would never have to be notified that something changed. Everything would propagate naturally throughout the graph and the output would simply happen. Additionally, as the graph topology becomes more complicated, evaluation times should remain roughly unchanged due to the parallel nature of evaluation.
 
 Blog can be found here: http://neuralresearch.blogspot.com/2014/02/parallel-graph-traversal.html
+
+**CPUThreadedGraph**
+This project contains a simplistic implementation of my theory. Due to the nature of CPU threading, however, it is absolutely *not* scalable.  By that I mean, it breaks at any marginally complicated topology. I threw in a System.Threading.Thread.Sleep(1) method in there which made the system work beautifully, however, it severely  crippled my benchmarking abilities and skewed the results. That being said, I did find out that my hypothesis seems to be correct. The evaluation time didn't fluctuate very much, even as the graph become exponentially more complicated.
+
+**SimpleGraph**
+This project is a simple, recursive implementation of the other project. I will be using it to benchmark against the CUDA version later on and to gather preliminary observations.
